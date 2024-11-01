@@ -1,28 +1,27 @@
 {
   "name": "particles.js",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A lightweight JavaScript library for creating particles",
-  "homepage": "http://vincentgarreau.com/particles.js",
+  "homepage": "https://github.com/imhlq/particles.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/VincentGarreau/particles.js.git"
+    "url": "https://github.com/imhlq/particles.js.git"
   },
   "keywords": [
     "particles",
     "particle",
     "canvas"
   ],
-  "author": "Vincent Garreau",
+  "author": "Vincent Garreau (modified by xHou)",
   "license": "MIT",
   "files": [
     "particles.js",
     "particles.min.js"
   ],
   "bugs": {
-    "url": "https://github.com/VincentGarreau/particles.js/issues"
-  },
-  "homepage": "https://github.com/VincentGarreau/particles.js"
+    "url": "https://github.com/imhlq/particles.js/issues"
+  }
 }
