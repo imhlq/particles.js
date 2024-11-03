@@ -721,10 +721,10 @@ var pJS = function(tag_id, params){
       
     if (pJS.particles.move.attract.merge.enable && dist <= pJS.particles.move.attract.merge.distance){
       /* merge particles */
-      var combinedMass = p1.mass + p2.mass;
+      var combinedMass = mass_p1 + mass_p2;
 
-      p1.vx = (p1.vx * p1.mass + p2.vx * p2.mass) / combinedMass;
-      p1.vy = (p1.vy * p1.mass + p2.vy * p2.mass) / combinedMass;
+      p1.vx = (p1.vx * mass_p1 + p2.vx * mass_p2) / combinedMass;
+      p1.vy = (p1.vy * mass_p1 + p2.vy * mass_p2) / combinedMass;
 
       p1.radius = combinedMass ** (1/3);
       p2.radius = 0;
