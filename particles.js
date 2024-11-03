@@ -709,6 +709,8 @@ var pJS = function(tag_id, params){
 
   pJS.fn.interact.attractParticles  = function(p1, p2){
 
+    if (p1.radius == 0 || p2.radius == 0) return;
+
     /* condensed particles */
     var dx = p1.x - p2.x,
         dy = p1.y - p2.y,
@@ -716,8 +718,20 @@ var pJS = function(tag_id, params){
 
     var mass_p1 = p1.radius ** 3,
         mass_p2 = p2.radius ** 3;
+      
+    if (pJS.particles.move.attract.merge.enable && dist <= pJS.particles.move.attract.merge.distance){
+      /* merge particles */
+      var combinedMass = p1.mass + p2.mass;
 
-    if(dist <= pJS.particles.move.attract.maxDistance){
+      p1.vx = (p1.vx * p1.mass + p2.vx * p2.mass) / combinedMass;
+      p1.vy = (p1.vy * p1.mass + p2.vy * p2.mass) / combinedMass;
+
+      p1.radius = combinedMass ** (1/3);
+      p2.radius = 0;
+      p2.vx = 0;
+      p2.vy = 0;
+
+    } else if(dist <= pJS.particles.move.attract.maxDistance && dist > pJS.particles.move.attract.merge.distance){
 
       /* attractive force */
       var force_1 = (pJS.particles.move.attract.attractionStrength * mass_p2) / (dist*dist),
