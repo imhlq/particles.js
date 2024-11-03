@@ -79,7 +79,11 @@ var pJS = function(tag_id, params){
         attract: {
           enable: false,
           attractionStrength: 0.01,
-          merge: false
+          maxDistance: 200,
+          merge: {
+            enable: false,
+            distance: 5
+          }
         }
       },
       array: []
@@ -724,7 +728,6 @@ var pJS = function(tag_id, params){
 
       p2.vx += force_2 * dx / dist;
       p2.vy += force_2 * dy / dist;
-
     }
   }
 
