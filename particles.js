@@ -1,9 +1,6 @@
 /* -----------------------------------------------
 /* Author : Vincent Garreau  - vincentgarreau.com
-/* MIT license: http://opensource.org/licenses/MIT
-/* Demo / Generator : vincentgarreau.com/particles.js
-/* GitHub : github.com/VincentGarreau/particles.js
-/* How to use? : Check the GitHub README
+/* Modified by xHou - xhou.me
 /* v2.0.0
 /* ----------------------------------------------- */
 
@@ -81,8 +78,8 @@ var pJS = function(tag_id, params){
         bounce: false,
         attract: {
           enable: false,
-          rotateX: 3000,
-          rotateY: 3000
+          attractionStrength: 0.01,
+          merge: false
         }
       },
       array: []
@@ -713,20 +710,22 @@ var pJS = function(tag_id, params){
         dy = p1.y - p2.y,
         dist = Math.sqrt(dx*dx + dy*dy);
 
-    if(dist <= pJS.particles.line_linked.distance){
+    var mass_p1 = p1.radius ** 3,
+        mass_p2 = p2.radius ** 3;
 
-      var ax = dx/(pJS.particles.move.attract.rotateX*1000),
-          ay = dy/(pJS.particles.move.attract.rotateY*1000);
+    if(dist <= pJS.particles.move.attract.maxDistance){
 
-      p1.vx -= ax;
-      p1.vy -= ay;
+      /* attractive force */
+      var force_1 = (pJS.particles.move.attract.attractionStrength * mass_p2) / (dist*dist),
+          force_2 = (pJS.particles.move.attract.attractionStrength * mass_p1) / (dist*dist);
 
-      p2.vx += ax;
-      p2.vy += ay;
+      p1.vx -= force_1 * dx / dist;
+      p1.vy -= force_1 * dy / dist;
+
+      p2.vx += force_2 * dx / dist;
+      p2.vy += force_2 * dy / dist;
 
     }
-    
-
   }
 
 
