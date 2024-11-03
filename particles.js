@@ -82,7 +82,7 @@ var pJS = function(tag_id, params){
           maxDistance: 200,
           merge: {
             enable: false,
-            distance: 5
+            distance: 3
           }
         }
       },
@@ -714,10 +714,11 @@ var pJS = function(tag_id, params){
     /* condensed particles */
     var dx = p1.x - p2.x,
         dy = p1.y - p2.y,
-        dist = Math.sqrt(dx*dx + dy*dy);
+        distSquared = (dx * dx) + (dy * dy),
+        dist = Math.sqrt(distSquared);
 
-    var mass_p1 = p1.radius ** 3,
-        mass_p2 = p2.radius ** 3;
+    var mass_p1 = p1.radius * p1.radius * p1.radius,
+        mass_p2 = p2.radius * p2.radius * p2.radius;
       
     if (pJS.particles.move.attract.merge.enable && dist <= pJS.particles.move.attract.merge.distance){
       /* merge particles */
@@ -726,16 +727,16 @@ var pJS = function(tag_id, params){
       p1.vx = (p1.vx * mass_p1 + p2.vx * mass_p2) / combinedMass;
       p1.vy = (p1.vy * mass_p1 + p2.vy * mass_p2) / combinedMass;
 
-      p1.radius = combinedMass ** (1/3);
+      p1.radius = Math.cbrt(combinedMass);
       p2.radius = 0;
       p2.vx = 0;
       p2.vy = 0;
 
-    } else if(dist <= pJS.particles.move.attract.maxDistance && dist > pJS.particles.move.attract.merge.distance){
+    } else if(dist <= pJS.particles.move.attract.maxDistance && dist > 2*pJS.particles.move.attract.merge.distance){
 
       /* attractive force */
-      var force_1 = (pJS.particles.move.attract.attractionStrength * mass_p2) / (dist*dist),
-          force_2 = (pJS.particles.move.attract.attractionStrength * mass_p1) / (dist*dist);
+      var force_1 = (pJS.particles.move.attract.attractionStrength * mass_p2) / distSquared,
+          force_2 = (pJS.particles.move.attract.attractionStrength * mass_p1) / distSquared;
 
       p1.vx -= force_1 * dx / dist;
       p1.vy -= force_1 * dy / dist;
