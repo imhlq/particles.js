@@ -80,6 +80,7 @@ var pJS = function(tag_id, params){
           enable: false,
           attractionStrength: 0.01,
           maxDistance: 200,
+          maxSpeed: 5,
           merge: {
             enable: false,
             distance: 3
@@ -710,7 +711,7 @@ var pJS = function(tag_id, params){
   pJS.fn.interact.attractParticles  = function(p1, p2){
 
     if (p1.radius == 0 || p2.radius == 0) return;
-
+    const maxSpeed = pJS.particles.move.attract.maxSpeed || 5.0;
     /* condensed particles */
     var dx = p1.x - p2.x,
         dy = p1.y - p2.y,
@@ -743,6 +744,16 @@ var pJS = function(tag_id, params){
 
       p2.vx += force_2 * dx / dist;
       p2.vy += force_2 * dy / dist;
+    }
+
+    if (p1.vx * p1.vx + p1.vy * p1.vy > maxSpeed * maxSpeed) {
+      p1.vx *= 0.1 * p1.vx;
+      p1.vy *= 0.1 * p1.vy;
+    }
+
+    if (p2.vx * p2.vx + p2.vy * p2.vy > maxSpeed * maxSpeed) {
+      p2.vx *= 0.1 * p2.vx;
+      p2.vy *= 0.1 * p2.vy;
     }
   }
 
