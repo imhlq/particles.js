@@ -79,6 +79,7 @@ var pJS = function(tag_id, params){
         attract: {
           enable: false,
           attractionStrength: 0.01,
+          softenLength: 0.05,
           maxDistance: 200,
           maxSpeed: 5,
           merge: false
@@ -709,8 +710,7 @@ var pJS = function(tag_id, params){
 
     if (p1.radius == 0 || p2.radius == 0) return;
     const maxSpeed = pJS.particles.move.attract.maxSpeed || 5.0;
-    const mergeSize = Math.abs(p1.radius - p2.radius);
-    const attractDistance = (p1.radius + p2.radius);
+    const mergeSize = Math.max(Math.abs(p1.radius - p2.radius), 0.01);
     /* condensed particles */
     var dx = p1.x - p2.x,
         dy = p1.y - p2.y,
@@ -726,13 +726,15 @@ var pJS = function(tag_id, params){
 
       p1.vx = (p1.vx * mass_p1 + p2.vx * mass_p2) / combinedMass;
       p1.vy = (p1.vy * mass_p1 + p2.vy * mass_p2) / combinedMass;
+      p1.x = (p1.x * mass_p1 + p2.x * mass_p2) / combinedMass;
+      p1.y = (p1.y * mass_p1 + p2.y * mass_p2) / combinedMass;
 
       p1.radius = Math.cbrt(combinedMass);
       p2.radius = 0;
       p2.vx = 0;
       p2.vy = 0;
 
-    } else if(dist <= pJS.particles.move.attract.maxDistance && dist > attractDistance){
+    } else if(dist <= pJS.particles.move.attract.maxDistance && dist > pJS.particles.move.attract.softenLength){
 
       /* attractive force */
       var force_1 = (pJS.particles.move.attract.attractionStrength * mass_p2) / distSquared,
@@ -743,6 +745,19 @@ var pJS = function(tag_id, params){
 
       p2.vx += force_2 * dx / dist;
       p2.vy += force_2 * dy / dist;
+    } else if (dist <= pJS.particles.move.attract.softenLength) {
+      /* Plummer core */
+      const softenDist = dist + pJS.particles.move.attract.softenLength,
+            softenDistSquared = (softenDist * softenDist);
+          
+      var force_1 = pJS.particles.move.attract.attractionStrength * mass_p2 / (softenDistSquared),
+          force_2 = pJS.particles.move.attract.attractionStrength * mass_p1 / (softenDistSquared);
+
+      p1.vx -= force_1 * dx / softenDist;
+      p1.vy -= force_1 * dy / softenDist;
+
+      p2.vx += force_2 * dx / softenDist;
+      p2.vy += force_2 * dy / softenDist;
     }
 
     if (p1.vx * p1.vx + p1.vy * p1.vy > maxSpeed * maxSpeed) {
